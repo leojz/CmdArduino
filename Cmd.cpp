@@ -98,25 +98,28 @@ void cmd_parse(char *cmd)
     // parse the command line statement and break it up into space-delimited
     // strings. the array of strings will be saved in the argv array.
     argv[i] = strtok(cmd, " ");
-    do
+    if (argv[0] != NULL)
     {
-        argv[++i] = strtok(NULL, " ");
-    } while ((i < 30) && (argv[i] != NULL));
+		do
+		{
+			argv[++i] = strtok(NULL, " ");
+		} while ((i < 30) && (argv[i] != NULL));
 
-    // save off the number of arguments for the particular command.
-    argc = i;
+		// save off the number of arguments for the particular command.
+		argc = i;
 
-    // parse the command table for valid command. used argv[0] which is the
-    // actual command name typed in at the prompt
-    for (cmd_entry = cmd_tbl; cmd_entry != NULL; cmd_entry = cmd_entry->next)
-    {
-        if (!strcmp(argv[0], cmd_entry->cmd))
-        {
-            cmd_entry->func(argc, argv);
-            cmd_display();
-            return;
-        }
-    }
+		// parse the command table for valid command. used argv[0] which is the
+		// actual command name typed in at the prompt
+		for (cmd_entry = cmd_tbl; cmd_entry != NULL; cmd_entry = cmd_entry->next)
+		{
+			if (!strcmp(argv[0], cmd_entry->cmd))
+			{
+				cmd_entry->func(argc, argv);
+				cmd_display();
+				return;
+			}
+		}
+	}
 
     // command not recognized. print message and re-generate prompt.
     strcpy_P(buf, cmd_unrecog);
